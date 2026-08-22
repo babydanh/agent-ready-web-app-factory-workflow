@@ -1,0 +1,198 @@
+openapi: 3.1.0
+info:
+  title: Tournament API Contract Example
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/api/v1
+paths:
+  /tournaments:
+    post:
+      operationId: Tournament_create
+      summary: Create a tournament
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/CsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTournamentRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Tournament'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/UnauthenticatedProblem'
+        '403':
+          $ref: '#/components/responses/ForbiddenProblem'
+        '409':
+          $ref: '#/components/responses/ConflictProblem'
+        '429':
+          $ref: '#/components/responses/RateLimitedProblem'
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 255
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      schema:
+        type: string
+        maxLength: 128
+    CsrfToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 512
+  schemas:
+    CreateTournamentRequest:
+      type: object
+      additionalProperties: false
+      required: [name, categoryId, startDate, registrationEndDate]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 160
+        categoryId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date-time
+        registrationEndDate:
+          type: string
+          format: date-time
+        visibility:
+          type: string
+          enum: [PUBLIC, PRIVATE]
+          default: PUBLIC
+    Tournament:
+      type: object
+      additionalProperties: false
+      required: [id, name, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, UPCOMING, REGISTRATION_OPEN, REGISTRATION_CLOSED, IN_PROGRESS, COMPLETED, CANCELLED]
+        createdAt:
+          type: string
+          format: date-time
+    SuccessEnvelope:
+      type: object
+      required: [statusCode, message, data]
+      properties:
+        statusCode:
+          type: integer
+          minimum: 200
+          maximum: 299
+        message:
+          type: string
+        data: {}
+        meta:
+          type: object
+          additionalProperties: true
+    Problem:
+      type: object
+      required: [type, title, status, detail, instance, code, requestId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        code:
+          type: string
+          pattern: '^[A-Z][A-Z0-9_]{2,79}$'
+        requestId:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            required: [pointer, code, message]
+            properties:
+              pointer:
+                type: string
+              code:
+                type: string
+              message:
+                type: string
+  responses:
+    ValidationProblem:
+      description: Request validation failed
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnauthenticatedProblem:
+      description: Authentication required
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ForbiddenProblem:
+      description: Permission denied
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ConflictProblem:
+      description: State conflict
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    RateLimitedProblem:
+      description: Rate limited
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'

@@ -1,0 +1,66 @@
+# Copy to evals/tasks/<task-id>.yaml and sanitize all data.
+task_id: <stable-task-id>
+title: <short-task-title>
+dataset: <dataset-name>@<version>
+category: create|read|classify|extract|recommend|mutate|safety
+risk_tier: A0|A1|A2|A3|A4
+owner: <team-or-person>
+input:
+  user_intent: <sanitized-input>
+  context_refs: []
+  fixture_refs: []
+allowed_tools:
+  - name: <tool-name>
+    args_constraints: {}
+    side_effect: none|read|write|external-call
+forbidden_tools: []
+expected_behavior:
+  - <behavioral requirement>
+non_goals:
+  - <explicitly forbidden behavior>
+success_criteria:
+  deterministic:
+    - id: <check-id>
+      command_or_check: <test/schema/state-check>
+      required: true
+  state_checks:
+    - target: <db/event/file/external-state>
+      expected: {}
+      required: true
+  tool_calls:
+    - tool: <tool-name>
+      constraints: {}
+      required: false
+  rubric_refs: []
+stop_conditions:
+  max_turns: <number>
+  max_tool_calls: <number>
+  max_duration_seconds: <number>
+  max_cost_usd: <number>
+  repeated_action_limit: <number>
+grader_policy:
+  hard_gates: [schema, deterministic, state, tool_policy, safety]
+  model_grader: none|rubric-id
+  human_review: not-required|sample|required
+  calibration_set: <reference-or-not-applicable>
+tracked_metrics:
+  - task_pass
+  - turns
+  - tool_calls
+  - input_tokens
+  - output_tokens
+  - latency_ms
+  - estimated_cost_usd
+  - policy_violations
+  - fallback_used
+privacy:
+  pii_present: false
+  redaction_status: passed|pending|not-applicable
+  retention: <policy-reference>
+reference_solution: <fixture-or-description>
+regression_baseline: <suite/version-or-not-applicable>
+release_threshold:
+  pass_rate: <value>
+  regression_floor: <value>
+  cost_ceiling_usd: <value>
+  safety_violations: 0

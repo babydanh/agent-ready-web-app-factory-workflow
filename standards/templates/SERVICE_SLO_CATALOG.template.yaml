@@ -1,0 +1,57 @@
+# Copy to docs/operations/services/<service-id>.yaml and customize.
+service_id: <stable-service-id>
+name: <service-name>
+owner_team: <team>
+technical_owner: <person-or-team>
+business_owner: <person-or-team>
+criticality: tier-1|tier-2|tier-3|experimental
+environments:
+  - local
+  - test
+  - staging
+  - production
+entrypoints:
+  - <url-or-internal-entrypoint>
+dependencies:
+  - id: <dependency-id>
+    mode: synchronous|asynchronous|cache|optional
+    failure_policy: fail-closed|fail-open|degrade|queue|fallback|manual-recovery
+    timeout_ms: <number>
+    retry_max: <number>
+    idempotency_required: true
+sli_slos:
+  - slo_id: <SLO-ID>
+    journey: <user-journey-or-operation>
+    sli_type: availability|latency|error-rate|throughput|freshness|queue-age|durability|correctness|recovery
+    definition: <precise numerator/denominator/measurement>
+    target: <target-with-unit-and-percentile>
+    window: <measurement-window>
+    error_budget: <budget>
+    query_or_source: <metric/log/trace/query-reference>
+    alert_policy: <alert-reference>
+observability:
+  dashboard: <link-or-path>
+  runbook: <link-or-path>
+  log_events: []
+  metrics: []
+  traces: []
+health:
+  liveness: <endpoint-or-command>
+  readiness: <endpoint-or-command>
+  startup: <endpoint-or-command>
+  critical_dependencies: []
+release:
+  rollback: <command-or-runbook>
+  migration_policy: expand-contract|backward-compatible|manual
+  post_release_watch: <duration>
+recovery:
+  rpo: <duration-or-not-applicable>
+  rto: <duration-or-not-applicable>
+  backup_policy: <link-or-description>
+  last_restore_drill: <YYYY-MM-DD-or-never>
+cost:
+  budget_monthly: <amount-or-unknown>
+  primary_drivers: []
+  alert_thresholds: []
+last_reviewed: <YYYY-MM-DD>
+reviewed_by: <person-or-team>

@@ -1,0 +1,80 @@
+# SKILL — Quy tắc cho AI Agent trong Web App Factory
+
+## Vai trò
+
+Agent phải hoạt động như một kỹ sư phần mềm có trách nhiệm: hiểu context trước khi sửa, thay đổi trong phạm vi nhỏ, xác nhận bằng test và ghi lại tri thức sau khi hoàn thành. Agent không được đoán kiến trúc chỉ từ tên file hoặc tự coi việc build thành công là bằng chứng nghiệp vụ đúng.
+
+## Quy trình đọc bắt buộc
+
+Trước khi code, agent phải đọc README, trạng thái dự án, skill map của phần liên quan, Graphify report và tài liệu domain. Agent phải đọc `standards/README.md`, `knowledge/WEB_APP_PROBLEM_CATALOG.md` và `knowledge/DOMAIN_ADAPTATION_GUIDE.md`, chọn problem cards/profile phù hợp, phân loại change tier, chọn Product Discovery/Architecture/Data/Database/API/UI spec phù hợp, rồi lập impact map. Normal/high-risk feature phải có discovery/architecture artifact trước implementation; feature có backend/side effect phải đọc `knowledge/BACKEND_PROBLEM_PLAYBOOK.md` và chọn rows trong `standards/PROBLEM_ORIENTED_TEST_MATRIX.md`. Load domain pack theo signal thay vì đọc hết: commerce → `knowledge/COMMERCE_SYSTEMS_PLAYBOOK.md`; recommendation/search → `knowledge/RECOMMENDATION_SEARCH_RANKING_PLAYBOOK.md`; dashboard → `knowledge/DASHBOARD_ANALYTICS_PLAYBOOK.md`; race/payment/webhook/queue → `knowledge/TRANSACTION_CONCURRENCY_PLAYBOOK.md`; repo/CI → `knowledge/REPOSITORY_CI_PATTERNS_PLAYBOOK.md`; Việt Nam → `standards/VIETNAM_WEB_APP_COMPLIANCE_PROFILE.md`; iOS → `standards/APPLE_IOS_APP_STORE_POLICY_PROFILE.md`; typography/token/light-dark/system/high-contrast → `standards/THEME_AND_DESIGN_TOKENS_SPEC.md`; locale/translation/date-number-currency/timezone/RTL → `standards/I18N_L10N_SPEC.md`. Không grep/cat mù toàn bộ repository, chỉ đọc các file được Graphify hoặc impact map xác định là liên quan.
+
+Trước task có external side effect hoặc high-risk change, agent phải đọc `standards/AI_AGENT_PROTOCOL.md`, `standards/AI_AGENT_HARNESS_SPEC.md`, `standards/AI_EVALUATION_AND_COST_SPEC.md` nếu có AI và `standards/SRE_PLATFORM_OPERATIONS_SPEC.md` nếu có runtime/release impact. Task phải có source of truth, allowed paths, forbidden actions, stop conditions và output/evidence schema. Nếu thiếu contract, discovery decision hoặc acceptance criteria, dùng `NEEDS_CLARIFICATION`, không tự suy đoán. Với profile Việt Nam, `COMPLIANCE_SCOPE_RECORD` và `LEGAL_REVIEW_REQUIRED` là review controls, không phải legal conclusion; với Apple, review artifact không phải approval.
+
+Sau feature lớn, thay đổi module hoặc thay đổi luồng dữ liệu, phải cập nhật Graphify và kiểm tra import edge. Nếu Graphify không chạy được, ghi lỗi vào state và không giả vờ rằng graph đã cập nhật.
+
+## Contract-first và standards rules
+
+`knowledge/WEB_APP_PROBLEM_CATALOG.md` là catalog các bài toán lặp lại và failure modes; `knowledge/DOMAIN_ADAPTATION_GUIDE.md` là chuẩn chọn archetype/profile; `knowledge/BACKEND_PROBLEM_PLAYBOOK.md` là recipe cho CRUD, booking, payment, external API, webhook/outbox, upload, search, notification, realtime, job, cache, auth, AI và deployment. `standards/PROBLEM_ORIENTED_TEST_MATRIX.md` là ma trận chuyển failure mode thành test/evidence. `standards/PRODUCT_DISCOVERY_SPEC.md` là chuẩn cho problem, user/context, evidence, assumption, alternatives, outcome metrics và go/no-go. `standards/ARCHITECTURE_GOVERNANCE_SPEC.md` là chuẩn cho C4, ADR, quality attributes, dependency boundaries, fitness functions, waiver và drift review. `standards/CANONICAL_DATA_SPEC.md` là chuẩn cho tên field, ID, nullability, enum, money, time, privacy và state. `standards/DATABASE_ARCHITECTURE_SPEC.md` là chuẩn cho ownership, normalization, constraint, index, transaction, migration, retention và backup. `standards/API_CONTRACT_SPEC.md` cùng `CONTRACT_GOVERNANCE.md` là chuẩn cho success/error envelope, OpenAPI/JSON Schema, idempotency, pagination, realtime/job payload, compatibility và deprecation. `standards/UI_UX_DESIGN_SYSTEM_SPEC.md` cùng `DESIGN_QA_SPEC.md` là chuẩn cho token, component, state matrix, responsive và WCAG 2.2 AA. `standards/THEME_AND_DESIGN_TOKENS_SPEC.md` là chuẩn cho primitive/semantic/component token, typography, light/dark/system, SSR/no-flash, contrast, forced colors, reduced motion và direction-aware layout. `standards/I18N_L10N_SPEC.md` là chuẩn cho locale registry, fallback, message catalog, plural/select, date/number/currency/timezone, translation review, text expansion, bidi và RTL. `standards/THEME_I18N_GATES.md` là source of truth cho artifact và release blockers của hai profile. `standards/SRE_PLATFORM_OPERATIONS_SPEC.md` là chuẩn cho service catalog, SLI/SLO, observability, incident, backup/restore, deployment và rollback. `standards/AI_EVALUATION_AND_COST_SPEC.md` là chuẩn cho dataset, graders, safety, model/prompt/tool version, cost budget và offline/online eval. `knowledge/COMMERCE_SYSTEMS_PLAYBOOK.md` và `knowledge/TRANSACTION_CONCURRENCY_PLAYBOOK.md` là chuẩn nhận diện money/inventory/payment/ledger/payout/idempotency/reconciliation controls. `knowledge/RECOMMENDATION_SEARCH_RANKING_PLAYBOOK.md` là chuẩn cho event/candidate/scoring/re-ranking/cold-start/evaluation/safety. `knowledge/DASHBOARD_ANALYTICS_PLAYBOOK.md` là chuẩn cho metric/data grain/access/freshness/query/export. `knowledge/REPOSITORY_CI_PATTERNS_PLAYBOOK.md` là chuẩn cho repo boundary, CODEOWNERS, CI tiers, cache và supply-chain evidence. `standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` là source of truth cho profile activation, required artifacts, blockers và waiver.
+
+Không thêm field, status, error code, endpoint, event hoặc UI state ngoài source of truth mà không cập nhật contract và consumer impact. Không trả raw ORM row. Không để UI suy luận domain state từ message text. Không coi schema example hoặc TypeScript compile là đủ nếu chưa có runtime contract/negative evidence.
+
+## Quy tắc stack của đồ án mẫu
+
+| Khu vực | Chuẩn |
+|---|---|
+| Backend | NestJS modular monolith, TypeScript strict |
+| Database | PostgreSQL/PostGIS + Drizzle ORM |
+| Cache/queue | Redis + BullMQ |
+| Auth | JWT, Passport, bcrypt, RBAC |
+| Realtime | Socket.IO với auth handshake, room và cleanup |
+| Frontend | Next.js App Router, React, TypeScript |
+| UI | TailwindCSS, shared UI primitives, mobile-first |
+| State | Zustand cho global/transient state phù hợp |
+| HTTP | Axios instance và interceptor tập trung |
+| Form | React Hook Form + Zod |
+| Test | Jest, Supertest, Playwright |
+| Package | pnpm; không dùng npm/yarn trong repository này |
+
+Khi dùng bộ workflow cho dự án khác, phải thay bảng trên bằng stack thật của dự án trước khi code. Không áp dụng máy móc công nghệ của đồ án mẫu.
+
+## Backend rules
+
+Mỗi feature phải có module, controller, service và repository phù hợp. DTO phải validate toàn bộ input; response không được lộ password hash hoặc secret. Lỗi phải theo format thống nhất và lỗi domain nên nằm tại module tương ứng.
+
+Thay đổi schema phải đi theo chu trình `schema → migration generate → review SQL → migrate/push → restart backend → test`. Tiền, payout, refund và ELO phải nằm trong transaction phù hợp. Webhook phải verify signature, có idempotency key và audit trail. Payment/payout/entitlement/inventory mutations phải có transaction/concurrency plan, duplicate/out-of-order tests và reconciliation path. Commerce/payment/recommendation personalization mặc định là HighRisk; tier thấp hơn chỉ được dùng với explicit profile-risk-waiver có approver, compensating control và expiry. Trạng thái nghiệp vụ phải được mô hình hóa thành state machine; không dùng status mới nếu chưa cập nhật toàn bộ consumer.
+
+Bảng chính dùng soft delete nếu domain yêu cầu. Khi có nguy cơ race condition, dùng transaction và row lock phù hợp. Không hardcode bypass dành cho test vào production path.
+
+## Frontend rules
+
+Không dùng `any`, JavaScript, Pages Router, CSS Modules/SASS hoặc URL API rải trong component nếu chúng trái với convention của repository mẫu. Type API phải mapping chính xác với backend DTO. Logic API, fetch, submit và state phức tạp phải tách khỏi component.
+
+Dùng Server Component mặc định. Chỉ thêm `'use client'` khi cần hook, event hoặc browser API. Mọi form phải có loading, error, success và validation feedback. Chuỗi nhập phải trim theo utility chung. Không dùng `alert()`; dùng error helper và toast theo convention.
+
+Socket listener phải được cleanup. Các component lớn phải tách nhỏ. Animation dùng wrapper chung thay vì tạo hiệu ứng rải rác. UI phải có responsive, empty state, loading state, error state, permission state và accessibility cơ bản. Khi có Theme profile, chỉ dùng semantic/component tokens và test light/dark/system/no-flash/contrast/reduced-motion. Khi có I18N profile, không hardcode text, phải dùng message key, locale formatter, fallback, text expansion và logical CSS/RTL nếu hỗ trợ. State mapping phải dựa trên HTTP/status/error code ổn định và có fallback cho error chưa biết.
+
+## Security rules
+
+Không ghi API key, password, refresh token, cookie, private key hoặc dữ liệu production vào file workflow, log, commit hay screenshot. Chỉ commit `.env.example` với placeholder. Không copy credential thật sang template. Mọi route ghi dữ liệu phải kiểm tra authentication và authorization ở backend.
+
+Không tin input từ frontend, query string, webhook hoặc file upload. Validate ở boundary, kiểm tra quyền sở hữu resource và xử lý idempotency. Không dùng CORS `*` khi có credential.
+
+Trước feature có identity, PII, tiền, admin, realtime hoặc AI, agent phải đọc `security/THREAT_MODEL.md`, `security/AUTH_SECURITY_ARCHITECTURE.md` và phần tương ứng trong `security/SECURITY_TEST_MATRIX.md`. Khi phát hiện token/secret/session/permission risk, không tự đánh dấu Done; phải cập nhật `security/AUTH_CURRENT_STATE_REVIEW.md`, risk register hoặc ADR với remediation/evidence.
+
+## Gate selection
+
+Dùng `standards/EXTENDED_GATES_CHECKLIST.md`, `standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` và `standards/THEME_I18N_GATES.md` để chọn gate theo risk tier/profile. Small fix không bị ép qua full discovery/architecture; normal feature phải có contract/evidence; high-risk change phải có human approval, threat/control review, rollback và operational/AI evidence tương ứng. Commerce/payment/marketplace, personalized recommendation và iOS commerce không được silently chạy tier thấp. Không dùng `PASS_WITH_CONDITIONS` để che giấu P0, data-integrity failure, unauthorized action, unresolved legal/platform review hoặc thiếu approval bắt buộc.
+
+## Audit and evidence rules
+
+Mọi claim “pass” phải trỏ tới command, report, test, screenshot, trace, schema diff hoặc reviewer record. Traceability nối requirement → control → code/route/screen → test → evidence. P0/P1 không được che bằng waiver chung; waiver phải có owner, compensating control, expiry và human approval. `NEEDS_LEGAL_REVIEW` và platform review pending phải được giữ nguyên, không đổi thành PASS bằng AI. Standards pack không phải legal certification, Apple approval, PCI/payment certification hoặc sector compliance.
+
+## Working tree rules
+
+Trước mỗi batch, ghi `git status --short`, commit hiện tại và danh sách file mục tiêu. Không sửa file ngoài phạm vi. Nếu file thay đổi trong lúc xử lý, dừng, đọc lại bản mới nhất và áp dụng patch tối thiểu. Không dùng reset, restore, clean hoặc rewrite hàng loạt để xóa thay đổi của người dùng.
+
+Sau mỗi batch, chạy `git diff --check`, kiểm tra status và chạy validation phù hợp. Không format hoặc đổi tên hàng loạt file chỉ để làm đẹp.
+
+## Definition of Done
+
+Một feature chỉ Done khi có đặc tả phù hợp tier, discovery/architecture decision khi cần, code, type mapping, validation, permission, error/loading/empty state, migration nếu cần, test, tài liệu, evidence, contract compatibility review, theme/locale artifacts và visual/accessibility evidence khi applicable, SRE/AI evaluation evidence khi applicable và Graphify update nếu thay đổi đủ lớn. Báo cáo cuối phải nêu rõ phần đã làm, phần chưa làm, lệnh đã chạy, test đã pass, eval/cost/SLO result nếu có, rủi ro, waiver nếu có và cách rollback.

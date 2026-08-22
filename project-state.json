@@ -1,0 +1,51 @@
+{
+  "workflow": "web-app-factory",
+  "project": "quan-ly-giai-dau",
+  "version": "1.0.0",
+  "status": "TEMPLATE_READY",
+  "current_phase": "template-packaging",
+  "updated_at": "2026-08-22T00:00:00+07:00",
+  "baseline": {
+    "repository_root": "Project_QuanLyGiaiDau",
+    "backend_path_actual": "HethongBackendApi_QuanlyGiaiDau",
+    "frontend_web_path_actual": "HethongFrontEndWeb_QLgiaidau",
+    "mobile_path_actual": "HethongFrontEndApp_QLgiaidau",
+    "backend_stack": "NestJS + TypeScript + Drizzle + PostgreSQL/PostGIS + Redis/BullMQ + Socket.IO",
+    "frontend_stack": "Next.js App Router + React + TypeScript + TailwindCSS + Zustand + Axios + Playwright"
+  },
+  "phase_status": {
+    "intake": "TEMPLATE_DEFINED",
+    "recon": "TEMPLATE_DEFINED",
+    "design": "TEMPLATE_DEFINED",
+    "environment": "TEMPLATE_DEFINED",
+    "vertical_slice": "TEMPLATE_DEFINED",
+    "feature_slices": "TEMPLATE_DEFINED",
+    "qa_security": "TEMPLATE_DEFINED",
+    "staging": "TEMPLATE_DEFINED",
+    "production": "NOT_STARTED",
+    "handoff": "TEMPLATE_DEFINED"
+  },
+  "evidence": [],
+  "risks": [
+    {
+      "id": "ENV-001",
+      "description": "Tài liệu có chỗ ghi Node 18 và chỗ yêu cầu Node 20 LTS; cần chốt một version canonical.",
+      "severity": "medium",
+      "status": "open"
+    },
+    {
+      "id": "ENV-002",
+      "description": "current-status ghi PostgreSQL 16 nhưng Docker Compose đang dùng image PostGIS PostgreSQL 15.",
+      "severity": "medium",
+      "status": "open"
+    },
+    {
+      "id": "PATH-001",
+      "description": "Một số tên thư mục trong README/Compose khác với thư mục thực tế; cần chốt canonical path trước khi tự động hóa.",
+      "severity": "medium",
+      "status": "open"
+    }
+  ],
+  "next_action": "Chạy template PRD cho một feature nhỏ, sau đó thực hiện vertical slice theo WORKFLOW.md.",
+  "notes": "File này là state mẫu. Khi dùng cho feature thật, cập nhật timestamp, phase, evidence và risks; không ghi secret."
+}

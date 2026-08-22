@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "themeId": "<theme-id>",
+  "owner": "<design-system-owner>",
+  "defaultMode": "system",
+  "supportedModes": ["light", "dark", "system"],
+  "selector": {
+    "attribute": "data-theme",
+    "lightValue": "light",
+    "darkValue": "dark",
+    "systemResolution": "prefers-color-scheme"
+  },
+  "persistence": {
+    "mechanism": "cookie-or-local-storage",
+    "key": "<theme-preference-key>",
+    "ssrSafe": true,
+    "expiry": "<policy-or-session>"
+  },
+  "tokenSource": "<path-to-canonical-token-source>",
+  "semanticTokens": {
+    "color.surface.canvas": {
+      "light": "<light-value>",
+      "dark": "<dark-value>",
+      "usage": "page background",
+      "contrastEvidence": "<evidence-path>"
+    },
+    "color.text.primary": {
+      "light": "<light-value>",
+      "dark": "<dark-value>",
+      "usage": "primary text",
+      "contrastEvidence": "<evidence-path>"
+    },
+    "color.action.primary": {
+      "light": "<light-value>",
+      "dark": "<dark-value>",
+      "usage": "primary action",
+      "contrastEvidence": "<evidence-path>"
+    },
+    "color.focus.ring": {
+      "light": "<light-value>",
+      "dark": "<dark-value>",
+      "usage": "keyboard focus",
+      "contrastEvidence": "<evidence-path>"
+    }
+  },
+  "typography": {
+    "fontFamilies": {
+      "ui": ["<primary-font>", "<fallback-font>"],
+      "mono": ["<monospace-font>", "<fallback-monospace>"]
+    },
+    "roles": {
+      "body": {
+        "fontSize": "<token>",
+        "lineHeight": "<token>",
+        "fontWeight": "<token>"
+      },
+      "heading": {
+        "fontSize": "<token>",
+        "lineHeight": "<token>",
+        "fontWeight": "<token>"
+      }
+    },
+    "localeScriptReview": ["vi-VN", "en-US"]
+  },
+  "layout": {
+    "spacingScale": "<scale-id>",
+    "radiusScale": "<scale-id>",
+    "zIndexLayers": ["base", "sticky", "dropdown", "popover", "modal", "toast"],
+    "breakpoints": {
+      "mobile": "<value>",
+      "tablet": "<value>",
+      "desktop": "<value>"
+    }
+  },
+  "accessibility": {
+    "target": "WCAG-2.2-AA",
+    "reducedMotion": "<alternative-or-disabled-motion>",
+    "forcedColors": "<tested-or-not-supported-with-rationale>",
+    "contrastModes": ["light", "dark"]
+  },
+  "release": {
+    "status": "draft",
+    "visualEvidence": "<path>",
+    "reviewer": "<person-or-team>",
+    "reviewDate": "<YYYY-MM-DD>"
+  }
+}

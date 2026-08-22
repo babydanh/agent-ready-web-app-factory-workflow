@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "catalogId": "<catalog-id>",
+  "sourceLocale": "en-US",
+  "supportedLocales": ["en-US", "vi-VN"],
+  "fallbackChain": {
+    "vi-VN": ["vi-VN", "vi", "en-US", "stable-key"],
+    "en-US": ["en-US", "stable-key"]
+  },
+  "direction": {
+    "en-US": "ltr",
+    "vi-VN": "ltr"
+  },
+  "owner": "<content-owner>",
+  "keys": {
+    "<domain.surface.meaning>": {
+      "source": "<source-locale-message>",
+      "translations": {
+        "en-US": "<english-message>",
+        "vi-VN": "<vietnamese-message>"
+      },
+      "variables": {
+        "count": "number"
+      },
+      "format": "icu-message-format-or-project-equivalent",
+      "context": "<where-and-why-this-message-appears>",
+      "sensitive": false,
+      "status": {
+        "en-US": "reviewed",
+        "vi-VN": "reviewed"
+      },
+      "reviewers": {
+        "en-US": "<reviewer>",
+        "vi-VN": "<native-or-domain-reviewer>"
+      },
+      "lastReviewed": "<YYYY-MM-DD>"
+    }
+  },
+  "criticalCopyPolicy": {
+    "categories": ["legal", "privacy", "payment", "refund", "safety", "moderation"],
+    "requiresHumanReview": true,
+    "missingTranslationStatus": "NEEDS_HUMAN_REVIEW"
+  },
+  "release": {
+    "status": "draft",
+    "coverageEvidence": "<path>",
+    "reviewer": "<person-or-team>",
+    "version": "<catalog-version>"
+  }
+}

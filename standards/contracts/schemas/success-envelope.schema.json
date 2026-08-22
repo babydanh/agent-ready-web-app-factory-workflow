@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://api.example.com/schemas/success-envelope.schema.json",
+  "title": "Canonical Success Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["statusCode", "message", "data"],
+  "properties": {
+    "statusCode": {
+      "type": "integer",
+      "minimum": 200,
+      "maximum": 299
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "data": {},
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "dataAsOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalPages": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextCursor": {
+          "type": ["string", "null"],
+          "maxLength": 512
+        }
+      }
+    }
+  }
+}

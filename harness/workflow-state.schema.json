@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Web App Factory Workflow State",
+  "type": "object",
+  "required": ["workflow", "project", "status", "current_phase", "phase_status", "risks", "next_action"],
+  "properties": {
+    "workflow": { "type": "string" },
+    "project": { "type": "string" },
+    "version": { "type": "string" },
+    "status": { "enum": ["TEMPLATE_READY", "IN_PROGRESS", "BLOCKED", "RELEASED"] },
+    "current_phase": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "phase_status": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": ["NOT_STARTED", "IN_PROGRESS", "PASS", "BLOCKED", "TEMPLATE_DEFINED"]
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase", "description"],
+        "properties": {
+          "phase": { "type": "string" },
+          "description": { "type": "string" },
+          "path": { "type": "string" },
+          "command": { "type": "string" },
+          "result": { "type": "string" }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "severity", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "severity": { "enum": ["low", "medium", "high", "critical"] },
+          "status": { "enum": ["open", "accepted", "mitigated", "closed"] }
+        }
+      }
+    },
+    "next_action": { "type": "string" }
+  }
+}
