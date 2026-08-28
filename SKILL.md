@@ -6,11 +6,13 @@ Agent phải hoạt động như một kỹ sư phần mềm có trách nhiệm:
 
 ## Quy trình đọc bắt buộc
 
-Trước khi code, agent phải đọc README, trạng thái dự án, skill map của phần liên quan, Graphify report và tài liệu domain. Agent phải đọc `standards/README.md`, `knowledge/WEB_APP_PROBLEM_CATALOG.md` và `knowledge/DOMAIN_ADAPTATION_GUIDE.md`, chọn problem cards/profile phù hợp, phân loại change tier, chọn Product Discovery/Architecture/Data/Database/API/UI spec phù hợp, rồi lập impact map. Normal/high-risk feature phải có discovery/architecture artifact trước implementation; feature có backend/side effect phải đọc `knowledge/BACKEND_PROBLEM_PLAYBOOK.md` và chọn rows trong `standards/PROBLEM_ORIENTED_TEST_MATRIX.md`. Load domain pack theo signal thay vì đọc hết: commerce → `knowledge/COMMERCE_SYSTEMS_PLAYBOOK.md`; recommendation/search → `knowledge/RECOMMENDATION_SEARCH_RANKING_PLAYBOOK.md`; dashboard → `knowledge/DASHBOARD_ANALYTICS_PLAYBOOK.md`; race/payment/webhook/queue → `knowledge/TRANSACTION_CONCURRENCY_PLAYBOOK.md`; repo/CI → `knowledge/REPOSITORY_CI_PATTERNS_PLAYBOOK.md`; Việt Nam → `standards/VIETNAM_WEB_APP_COMPLIANCE_PROFILE.md`; iOS → `standards/APPLE_IOS_APP_STORE_POLICY_PROFILE.md`; typography/token/light-dark/system/high-contrast → `standards/THEME_AND_DESIGN_TOKENS_SPEC.md`; locale/translation/date-number-currency/timezone/RTL → `standards/I18N_L10N_SPEC.md`. Không grep/cat mù toàn bộ repository, chỉ đọc các file được Graphify hoặc impact map xác định là liên quan.
+Trước khi code, agent phải đọc README, trạng thái dự án, skill map của phần liên quan, Graphify report và tài liệu domain. Agent phải đọc `standards/README.md`, `knowledge/WEB_APP_PROBLEM_CATALOG.md` và `knowledge/DOMAIN_ADAPTATION_GUIDE.md`, chọn problem cards/profile phù hợp, phân loại change tier, chọn Product Discovery/Architecture/Data/Database/API/UI spec phù hợp, rồi lập Feature Impact Review và impact map. Feature Impact Review phải trả lời route/screen nào bị ảnh hưởng, role/permission nào bị ảnh hưởng, state transition/invariant nào đổi, button nào hiện/ẩn/disabled/loading, error/empty/conflict/retry ra sao, Web/App/Admin/Ops có lệch semantics không, source of truth/contract owner là ai, test/evidence nào chứng minh và quyết định GO/GO_WITH_CONDITIONS/HOLD/STOP.
+Normal/high-risk feature phải có discovery/architecture artifact trước implementation; feature có backend/side effect phải đọc `knowledge/BACKEND_PROBLEM_PLAYBOOK.md` và chọn rows trong `standards/PROBLEM_ORIENTED_TEST_MATRIX.md`. Load domain pack theo signal thay vì đọc hết: commerce → `knowledge/COMMERCE_SYSTEMS_PLAYBOOK.md`; recommendation/search → `knowledge/RECOMMENDATION_SEARCH_RANKING_PLAYBOOK.md`; dashboard → `knowledge/DASHBOARD_ANALYTICS_PLAYBOOK.md`; race/payment/webhook/queue → `knowledge/TRANSACTION_CONCURRENCY_PLAYBOOK.md`; repo/CI → `knowledge/REPOSITORY_CI_PATTERNS_PLAYBOOK.md`; Việt Nam → `standards/VIETNAM_WEB_APP_COMPLIANCE_PROFILE.md`; iOS → `standards/APPLE_IOS_APP_STORE_POLICY_PROFILE.md`; typography/token/light-dark/system/high-contrast → `standards/THEME_AND_DESIGN_TOKENS_SPEC.md`; locale/translation/date-number-currency/timezone/RTL → `standards/I18N_L10N_SPEC.md`. Không grep/cat mù toàn bộ repository, chỉ đọc các file được Graphify hoặc impact map xác định là liên quan.
 
 Trước task có external side effect hoặc high-risk change, agent phải đọc `standards/AI_AGENT_PROTOCOL.md`, `standards/AI_AGENT_HARNESS_SPEC.md`, `standards/AI_EVALUATION_AND_COST_SPEC.md` nếu có AI và `standards/SRE_PLATFORM_OPERATIONS_SPEC.md` nếu có runtime/release impact. Task phải có source of truth, allowed paths, forbidden actions, stop conditions và output/evidence schema. Nếu thiếu contract, discovery decision hoặc acceptance criteria, dùng `NEEDS_CLARIFICATION`, không tự suy đoán. Với profile Việt Nam, `COMPLIANCE_SCOPE_RECORD` và `LEGAL_REVIEW_REQUIRED` là review controls, không phải legal conclusion; với Apple, review artifact không phải approval.
 
-Sau feature lớn, thay đổi module hoặc thay đổi luồng dữ liệu, phải cập nhật Graphify và kiểm tra import edge. Nếu Graphify không chạy được, ghi lỗi vào state và không giả vờ rằng graph đã cập nhật.
+Sau feature lớn, thay đổi module hoặc thay đổi luồng dữ liệu, phải cập nhật Graphify và kiểm tra import edge. Convergence Review phải đối chiếu implementation với Feature Impact Review; nếu phát sinh route, button, state, field, endpoint, event hoặc side effect mới thì cập nhật FIR trước khi tiếp tục.
+Nếu Graphify không chạy được, ghi lỗi vào state và không giả vờ rằng graph đã cập nhật.
 
 ## Contract-first và standards rules
 
@@ -53,6 +55,35 @@ Dùng Server Component mặc định. Chỉ thêm `'use client'` khi cần hook,
 
 Socket listener phải được cleanup. Các component lớn phải tách nhỏ. Animation dùng wrapper chung thay vì tạo hiệu ứng rải rác. UI phải có responsive, empty state, loading state, error state, permission state và accessibility cơ bản. Khi có Theme profile, chỉ dùng semantic/component tokens và test light/dark/system/no-flash/contrast/reduced-motion. Khi có I18N profile, không hardcode text, phải dùng message key, locale formatter, fallback, text expansion và logical CSS/RTL nếu hỗ trợ. State mapping phải dựa trên HTTP/status/error code ổn định và có fallback cho error chưa biết.
 
+## Quy định Chuẩn hóa Đa ngôn ngữ (VI / EN Localization & Parity Standards)
+
+1. **Nguyên tắc cốt lõi (Core Invariant)**:
+   - Toàn bộ giao diện người dùng (UI texts, tiêu đề, nút bấm, nhãn trạng thái, thông báo lỗi, empty state, validation, modal, tooltip, share payload) PHẢI hỗ trợ 100% cả 2 ngôn ngữ: **Tiếng Việt (`vi`)** và **Tiếng Anh (`en`)**.
+   - **Tuyệt đối KHÔNG hardcode chuỗi text trần** trong bất kỳ component/widget nào. Mọi văn bản hiển thị phải được lấy từ hệ thống từ điển i18n/l10n.
+
+2. **Web Frontend (`HethongFrontEndWeb_QLgiaidau` - `next-intl`)**:
+   - Mọi key dịch thuật phải được khai báo đồng thời và đối xứng ở cả 2 file `messages/vi.json` và `messages/en.json`.
+   - Kiểm tra đúng cấu trúc Namespace khi gọi `useTranslations('Namespace')` hoặc `getTranslations('Namespace')` để tránh hoàn toàn lỗi `MISSING_MESSAGE: Namespace.key`.
+   - Các định dạng số, tiền tệ, ngày giờ phải theo chuẩn locale hiện tại thông qua `formatDate`, `formatCurrency`, `Intl.DateTimeFormat(locale, ...)`.
+
+3. **Mobile App (`HethongFrontEndApp_QLgiaidau` - Flutter `AppLocalizations`)**:
+   - Mọi chuỗi dịch thuật phải được khai báo đầy đủ trong cả 2 file ARB: `lib/l10n/app_vi.arb` và `lib/l10n/app_en.arb`.
+   - Trong Widget, luôn sử dụng `final l10n = AppLocalizations.of(context)!;` hoặc extension `context.l10n`.
+   - Khi thêm key mới, phải cập nhật đồng bộ cả 2 file ARB và xác thực `flutter analyze`.
+
+4. **Chuẩn hóa Thuật ngữ Thể thao Thống nhất (Sports Terminology Parity)**:
+   - Quán quân $\rightarrow$ `Champion`
+   - Á quân $\rightarrow$ `Runner-up`
+   - Đồng hạng 3 / Hạng 3 $\rightarrow$ `Third Place` / `Joint 3rd Place`
+   - Vòng loại trực tiếp $\rightarrow$ `Knockout Stage`
+   - Vòng bảng $\rightarrow$ `Group Stage`
+   - Vòng nhánh thua $\rightarrow$ `Losers Bracket`
+   - Đang diễn ra $\rightarrow$ `Live` / `In Progress`
+   - Đã kết thúc $\rightarrow$ `Completed`
+   - Sắp diễn ra $\rightarrow$ `Upcoming`
+   - Vô thẳng $\rightarrow$ `BYE` / `Walkover`
+
+
 ## Security rules
 
 Không ghi API key, password, refresh token, cookie, private key hoặc dữ liệu production vào file workflow, log, commit hay screenshot. Chỉ commit `.env.example` với placeholder. Không copy credential thật sang template. Mọi route ghi dữ liệu phải kiểm tra authentication và authorization ở backend.
@@ -67,7 +98,8 @@ Dùng `standards/EXTENDED_GATES_CHECKLIST.md`, `standards/COMMERCE_RECOMMENDATIO
 
 ## Audit and evidence rules
 
-Mọi claim “pass” phải trỏ tới command, report, test, screenshot, trace, schema diff hoặc reviewer record. Traceability nối requirement → control → code/route/screen → test → evidence. P0/P1 không được che bằng waiver chung; waiver phải có owner, compensating control, expiry và human approval. `NEEDS_LEGAL_REVIEW` và platform review pending phải được giữ nguyên, không đổi thành PASS bằng AI. Standards pack không phải legal certification, Apple approval, PCI/payment certification hoặc sector compliance.
+Mọi claim “pass” phải trỏ tới command, report, test, screenshot, trace, schema diff hoặc reviewer record. Claim về button, state, parity hoặc runtime phải có evidence tương ứng; compile/build pass không được dùng thay cho UI/runtime evidence.
+Traceability nối requirement → control → code/route/screen → test → evidence. P0/P1 không được che bằng waiver chung; waiver phải có owner, compensating control, expiry và human approval. `NEEDS_LEGAL_REVIEW` và platform review pending phải được giữ nguyên, không đổi thành PASS bằng AI. Standards pack không phải legal certification, Apple approval, PCI/payment certification hoặc sector compliance.
 
 ## Working tree rules
 
