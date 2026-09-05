@@ -112,6 +112,7 @@ if (-not [string]::IsNullOrWhiteSpace($ChangeId)) {
         $readmeText = ''
         $tier = ''
         $includeAI = $false
+        $requiresImpactReview = $false
         $profiles = @()
         if (Test-Path -LiteralPath $readme -PathType Leaf) {
             $readmeText = Get-Content -LiteralPath $readme -Raw
@@ -125,6 +126,7 @@ if (-not [string]::IsNullOrWhiteSpace($ChangeId)) {
                 Add-Failure $failures "Change README has no Status field: changes/$ChangeId/README.md"
             }
             $includeAI = $readmeText -match '(?m)^\|\s*06-ai-eval-task\.yaml\s*\|\s*true\s*\|'
+            $requiresImpactReview = $readmeText -match '(?m)^Feature Impact Review:\s*required\b'
             $profileMatch = [regex]::Match($readmeText, '(?m)^Selected profile\(s\):\s*(.+)$')
             if ($profileMatch.Success -and $profileMatch.Groups[1].Value.Trim() -ne 'None') {
                 $profiles = @($profileMatch.Groups[1].Value.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
@@ -134,6 +136,12 @@ if (-not [string]::IsNullOrWhiteSpace($ChangeId)) {
         }
 
         $requiredChangeFiles = @('README.md', '00-problem-map.md', '07-plan.md', '08-tasks.md', '09-test-plan.md', '10-implementation-log.md', '11-convergence-review.md', '12-release-evidence.md')
+        if ($requiresImpactReview) {
+            $requiredChangeFiles += '05-feature-impact-review.md'
+            if ($tier -eq 'Normal' -or $tier -eq 'HighRisk') {
+                $requiredChangeFiles += @('05-button-state-matrix.md', '05-screen-state-matrix.md', '05-cross-platform-matrix.md')
+            }
+        }
         if ($tier -eq 'Normal' -or $tier -eq 'HighRisk') {
             $requiredChangeFiles += @('00-discovery-brief.md', '02-backend-feature-design.md', '02-data-entity.md', '03-endpoint-contract.md', '04-screen-spec.md')
         }
@@ -173,6 +181,20 @@ if (-not [string]::IsNullOrWhiteSpace($ChangeId)) {
         foreach ($relative in @($requiredChangeFiles | Sort-Object -Unique)) {
             if (-not (Test-Path -LiteralPath (Join-Path $changeRoot $relative) -PathType Leaf)) {
                 Add-Failure $failures "Required change artifact missing: changes/$ChangeId/$relative"
+            }
+        }
+        if ($requiresImpactReview) {
+            $impactPath = Join-Path $changeRoot '05-feature-impact-review.md'
+            if (Test-Path -LiteralPath $impactPath -PathType Leaf) {
+                $impactText = Get-Content -LiteralPath $impactPath -Raw
+                foreach ($requiredMarker in @('Decision', 'Source of truth', 'Affected', 'Negative', 'Evidence')) {
+                    if ($impactText -notmatch [regex]::Escape($requiredMarker)) {
+                        Add-Failure $failures "Feature Impact Review is missing required marker '$requiredMarker': changes/$ChangeId/05-feature-impact-review.md"
+                    }
+                }
+                if ($impactText -notmatch '(?m)Decision:\s*(GO|GO_WITH_CONDITIONS|HOLD|STOP)') {
+                    Add-Failure $failures "Feature Impact Review has no valid decision: changes/$ChangeId/05-feature-impact-review.md"
+                }
             }
         }
     }

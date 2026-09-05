@@ -104,6 +104,7 @@ $readmeLines = @(
     "Selected profile(s): $profileText",
     "Profile risk gate: $profileRiskStatus",
     'Profile-specific artifacts are required when their signal applies; the validator checks existence only, not legal/platform approval or semantic correctness.',
+    'Feature Impact Review: required before implementation; complete the decision, source-of-truth, surface, state, button, negative-case and evidence sections.',
     'If a risk waiver is requested, complete profile-risk-waiver.md before implementation; a waiver cannot bypass legal or platform review.',
     '',
     '## Current gate',
@@ -118,6 +119,10 @@ $readmeLines = @(
     '| Artifact | Required | Status | Owner |',
     '|---|---:|---|---|',
     '| 00-problem-map.md | true | not-started |  |',
+    '| 05-feature-impact-review.md | true | not-started |  |',
+    "| 05-button-state-matrix.md | $fullTier | not-started |  |",
+    "| 05-screen-state-matrix.md | $fullTier | not-started |  |",
+    "| 05-cross-platform-matrix.md | $fullTier | not-started |  |",
     "| 00-discovery-brief.md | $fullTier | not-started |  |",
     "| 01-architecture-review.md | $highTier | not-started |  |",
     "| 02-data-entity.md | $fullTier | not-started |  |",
@@ -166,8 +171,36 @@ $appleTemplate = Join-Path $workflowRoot 'standards/templates/APPLE_IOS_RELEASE_
 $themeTemplate = Join-Path $workflowRoot 'standards/templates/THEME_CONFIG.template.json'
 $translationTemplate = Join-Path $workflowRoot 'standards/templates/TRANSLATION_CATALOG.template.json'
 $localeQATemplate = Join-Path $workflowRoot 'standards/templates/LOCALE_QA_MATRIX.template.md'
+$featureImpactTemplate = Join-Path $workflowRoot 'templates/FEATURE_IMPACT_REVIEW.template.md'
+$buttonStateTemplate = Join-Path $workflowRoot 'templates/BUTTON_STATE_MATRIX.template.md'
+$screenStateTemplate = Join-Path $workflowRoot 'templates/SCREEN_STATE_MATRIX.template.md'
+$crossPlatformTemplate = Join-Path $workflowRoot 'templates/CROSS_PLATFORM_MATRIX.template.md'
 
 Add-CopyPlan $plan $problemMapTemplate '00-problem-map.md'
+
+if ($fullTier) {
+    Add-CopyPlan $plan $featureImpactTemplate '05-feature-impact-review.md'
+    Add-CopyPlan $plan $buttonStateTemplate '05-button-state-matrix.md'
+    Add-CopyPlan $plan $screenStateTemplate '05-screen-state-matrix.md'
+    Add-CopyPlan $plan $crossPlatformTemplate '05-cross-platform-matrix.md'
+} else {
+    $miniImpactLines = @(
+        "# Mini Feature Impact Review - $ChangeId",
+        '',
+        '- Decision: GO | GO_WITH_CONDITIONS | HOLD | STOP',
+        '- Source of truth:',
+        '- Affected routes/files:',
+        '- Roles/permissions:',
+        '- State/button action changed:',
+        '- Negative case:',
+        '- Test/evidence:',
+        '- Rollback/stop condition:',
+        '- Reviewer:',
+        '',
+        'If the change touches API, state, permission, realtime, terminal behavior, Web/App parity or a user action, promote this change to Normal and complete the full impact matrices.'
+    )
+    Add-TextPlan $plan '05-feature-impact-review.md' $miniImpactLines
+}
 
 if ($fullTier) {
     Add-CopyPlan $plan $briefTemplate '00-discovery-brief.md'

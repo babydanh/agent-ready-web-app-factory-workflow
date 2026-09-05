@@ -83,6 +83,41 @@ Socket listener phải được cleanup. Các component lớn phải tách nhỏ
    - Sắp diễn ra $\rightarrow$ `Upcoming`
    - Vô thẳng $\rightarrow$ `BYE` / `Walkover`
 
+## Quy định Chuẩn hóa Vibe Màu Sắc & Typography (Brand Design Tokens & Typography Standards)
+
+1. **Bảng màu cốt lõi SportO (SportO Brand Colors)**:
+   - **Primary Blue (`rgb(29, 142, 248) / #1D8EF8`)**: Màu nhận diện thương hiệu chủ đạo từ Web (`globals.css`) đồng bộ sang Mobile App. Dùng cho:
+     - Toàn bộ nút chính (Primary buttons, CTA, Apply/Save actions)
+     - Thanh điều hướng chính (Active Bottom Nav tab icon & label, Active Tab underline/pill, Top bar branding)
+     - Tiêu đề chính, Link điều hướng quan trọng ("Xem tất cả" / "View all", Breadcrumbs)
+     - Chỉ số active carousel (Pagination dot indicator active), Ring avatar active.
+   - **Primary Hover (`#0B76D8` / `#002461`)**: Trạng thái hover/pressed của các thành phần Primary.
+   - **Primary Light / Tint (`#B2CFFD`)**: Background của chip/badge trạng thái active, container sáng, selected list row.
+   - **Logo Navy (`#002E7C`)**: Màu logo navy và các mảng accent đậm.
+   - **Secondary Cyan Accent (`#3AB5F6`)**: Dùng cho điểm nhấn phụ trợ, sub-brand highlights, hoặc biểu đồ/icon phụ.
+   - **Neutral Slate Palette**: Slate 900 (`#0F172A`) cho title/body text đậm; Slate 600 (`#475569`) cho subtitle/secondary text; Slate 400 (`#94A3B8`) cho muted/inactive icon; Slate 200 (`#E2E8F0`) cho border/divider lines; Slate 50 (`#F8FAFC`) cho background surfaces.
+   - **Status Colors**: Success (`#16A34A`), Warning (`#D97706`), Danger/Live Pulse (`#DC2626`).
+
+2. **Chuẩn hóa Typography (Font Hierarchy & Weights)**:
+   - **Font Family**: Inter, SF Pro, Roboto, system-ui (Không dùng font lạ gây vỡ layout).
+   - **Hệ thống cấp bậc chữ (Hierarchy)**:
+     - `Heading 1 / Screen Title`: 20px - 24px, Bold (`FontWeight.w800` / `font-bold`), letter-spacing: `-0.02em`.
+     - `Section Title`: 16px - 18px, Bold (`FontWeight.w700` / `font-bold`).
+     - `Card Title / Match Title`: 14px - 15px, SemiBold (`FontWeight.w600` / `font-semibold`).
+     - `Body / Normal Text`: 13px - 14px, Regular (`FontWeight.w400` / `font-normal`), line-height: `1.5`.
+     - `Caption / Subtext / Badge`: 11px - 12px, Medium/Bold (`FontWeight.w500` hoặc `FontWeight.w600`).
+     - `Nav Item / Micro Label`: 10px - 11px, Bold khi active (`FontWeight.w700`), Medium khi inactive (`FontWeight.w500`).
+
+3. **Quy định Chuẩn hóa Animation & Motion Mượt mà (Flutter Motion & Interaction Standards)**:
+   - **Accordion / Expand & Collapse**:
+     - Tuyệt đối không toggle trạng thái UI đột ngột bằng `if (expanded) ...[]` gây giật layout (layout jank).
+     - Phải sử dụng `AnimatedCrossFade` hoặc `AnimatedSize` với duration từ `200ms - 300ms` và curve mượt mà (`Curves.fastOutSlowIn` hoặc `Curves.easeInOutCubic`).
+     - Icon mũi tên / chevron toggle phải kết hợp `AnimatedRotation` (turns: `0.5` / `0.0`, duration `250ms`) để xoay mềm mại đồng bộ với nội dung mở rộng.
+   - **Touch & Press Feedback**:
+     - Mọi interactive item, card, hàng danh sách phải bọc trong `InkWell` với `borderRadius` tương ứng để tạo ripple effect tự nhiên của hệ điều hành.
+   - **List Transitions & Micro-interactions**:
+     - Danh sách thay đổi trạng thái hoặc lọc dữ liệu cần hỗ trợ chuyển cảnh mượt (`AnimatedSwitcher` hoặc `FadeTransition`).
+     - Tránh animation quá dài (> 400ms) gây cảm giác chậm chạp cho người dùng.
 
 ## Security rules
 

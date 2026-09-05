@@ -12,7 +12,8 @@ Mọi handoff phải nêu source of truth, contract version, changed files, test
 
 **Không được:** Tự quyết định schema hoặc code khi nghiệp vụ chưa được xác nhận.
 
-**Đầu ra:** Product Discovery Brief, PRD, persona/segment, journey/evidence map, assumption register, outcome/guardrail metrics, decision GO/HOLD/STOP, priority, compliance scope và open questions. Với commerce/recommendation/dashboard, phải chọn profile/gates; với Theme/I18N phải ghi supported modes/locales/direction và acceptance matrix; với Việt Nam hoặc iOS phải tạo scope record và đánh dấu review owner.
+**Đầu ra:** Product Discovery Brief, PRD, persona/segment, journey/evidence map, assumption register, outcome/guardrail metrics, decision GO/HOLD/STOP, priority, compliance scope, Feature Impact Review decision và open questions.
+Với commerce/recommendation/dashboard, phải chọn profile/gates; với Theme/I18N phải ghi supported modes/locales/direction và acceptance matrix; với Việt Nam hoặc iOS phải tạo scope record và đánh dấu review owner.
 
 ## Domain/Architect Agent
 
@@ -44,7 +45,8 @@ Mọi handoff phải nêu source of truth, contract version, changed files, test
 
 **Không được:** Dùng `any`, hardcode URL API, lặp business logic, gọi API trực tiếp trong component, suy luận domain từ message text hoặc giả lập dữ liệu khi acceptance criteria yêu cầu dữ liệu thật.
 
-**Đầu ra:** Frontend code, screen spec/state matrix, type mapping, form validation, accessibility/visual evidence và frontend test. Khi có Theme, owner phải hoàn thiện `theme-config.json` và light/dark/system/no-flash/contrast evidence. Khi có I18N, owner phải hoàn thiện `translation-catalog.json`, `locale-qa-matrix.md`, formatter/fallback/text-expansion/RTL evidence nếu applicable.
+**Đầu ra:** Frontend code, screen spec/state matrix, Button-State Matrix, type mapping, form validation, accessibility/visual evidence và frontend test. Mọi action chính phải có visible/disabled/loading/confirm/success/error/retry/duplicate-click behavior rõ ràng.
+Khi có Theme, owner phải hoàn thiện `theme-config.json` và light/dark/system/no-flash/contrast evidence. Khi có I18N, owner phải hoàn thiện `translation-catalog.json`, `locale-qa-matrix.md`, formatter/fallback/text-expansion/RTL evidence nếu applicable.
 
 ## Realtime Agent
 
@@ -60,7 +62,7 @@ Mọi handoff phải nêu source of truth, contract version, changed files, test
 
 **Không được:** Chỉ kiểm tra happy path, đánh dấu pass khi test không chạy được hoặc bỏ qua fixture/schema drift.
 
-**Đầu ra:** Test plan, contract fixtures, test evidence, defect list, severity, reproduction steps, traceability links và release recommendation.
+**Đầu ra:** Test plan, contract fixtures, test evidence, defect list, severity, reproduction steps, state/button/platform regression matrix, traceability links và release recommendation.
 
 ## Security Agent
 
@@ -88,7 +90,8 @@ Mọi handoff phải nêu source of truth, contract version, changed files, test
 
 ## Reviewer/Release Agent
 
-**Nhiệm vụ:** Dùng `standards/EXTENDED_GATES_CHECKLIST.md`, `standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` và `standards/THEME_I18N_GATES.md` để kiểm tra evidence của discovery, architecture, data/API/UI, theme/locale, AI eval, SRE và security gates; rà source-of-truth consistency, contract compatibility, security/a11y findings, waiver expiry, SLO/error budget, rollback và quyết định pass/fail/review/block. Nếu có Việt Nam hoặc iOS, giữ nguyên `NEEDS_LEGAL_REVIEW`/platform review pending cho đến khi owner đủ thẩm quyền quyết định; không biến checklist thành certification.
+**Nhiệm vụ:** Dùng `standards/EXTENDED_GATES_CHECKLIST.md`, `standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md`, `standards/THEME_I18N_GATES.md` và `standards/FEATURE_IMPACT_REVIEW_SPEC.md` để kiểm tra evidence của discovery, impact review, surface/role/state/button/platform matrices, architecture, data/API/UI, theme/locale, AI eval, SRE và security gates; rà source-of-truth consistency, contract compatibility, security/a11y findings, waiver expiry, SLO/error budget, rollback và quyết định pass/fail/review/block.
+Nếu có Việt Nam hoặc iOS, giữ nguyên `NEEDS_LEGAL_REVIEW`/platform review pending cho đến khi owner đủ thẩm quyền quyết định; không biến checklist thành certification.
 
 **Đầu ra:** Gate report, compliance traceability, changelog, release note và handoff checklist.
 

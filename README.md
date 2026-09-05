@@ -18,6 +18,7 @@ A reusable, profile-aware workflow for building web applications with AI coding 
 | AI engineering | Agent task protocol, evaluation, safety, cost, tool and evidence controls |
 | Operational quality | SRE, observability, incident, migration, rollback, CI and repository patterns |
 | Harness | Bootstrap, one-command agent attachment, per-change workspace generation and read-only validation |
+| Feature Impact Review | Pre-code decision, affected surface inventory, role/state/button matrix, cross-platform parity and traceability |
 
 ## What this is not
 
@@ -105,7 +106,7 @@ From the standalone workflow repository, point `-ProjectRoot` at the host applic
   -Profile Commerce,VietnamCompliance
 ```
 
-The generator creates a `changes/<change-id>/` workspace containing a problem map, discovery, architecture, data, backend, API, UI, security, plan, tasks, test plan, implementation log, convergence review and release evidence. Profile selection adds the exact domain artifacts required by the selected profile.
+The generator creates a `changes/<change-id>/` workspace containing a problem map, Feature Impact Review, button/screen/platform matrices, discovery, architecture, data, backend, API, UI, security, plan, tasks, test plan, implementation log, convergence review and release evidence. Profile selection adds the exact domain artifacts required by the selected profile. Normal and HighRisk changes must complete the impact review before implementation; SmallFix changes receive a mini review and must be promoted when state, role, API, realtime, terminal or cross-platform impact is discovered.
 
 ## Agent operating protocol
 
@@ -117,6 +118,7 @@ User brief
   → Select problem cards and profiles
   → Create changes/<change-id>/
   → Complete discovery and source-of-truth contracts
+  → Complete Feature Impact Review and decide GO / GO_WITH_CONDITIONS / HOLD / STOP
   → Review architecture, data, API and UI impact
   → Implement bounded tasks
   → Run tests, security, accessibility, concurrency and AI checks as applicable
@@ -144,7 +146,7 @@ From a standalone workflow checkout, use the equivalent path:
 .\harness\validate-workflow.ps1 -ProjectRoot C:\work\my-web-app -Strict
 ```
 
-The validator checks manifest paths, empty files, JSON parseability, PowerShell syntax and profile artifact presence. It does not validate semantic OpenAPI/YAML correctness, visual fidelity, translation quality, WCAG conformance, model fairness, legal compliance, payment certification or App Store approval.
+The validator checks manifest paths, empty files, JSON parseability, PowerShell syntax, profile artifact presence and the required Feature Impact Review structure for newly generated changes. It does not validate semantic OpenAPI/YAML correctness, visual fidelity, translation quality, WCAG conformance, model fairness, legal compliance, payment certification or App Store approval.
 
 ## Theme, typography and localization workflow
 

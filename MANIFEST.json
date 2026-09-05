@@ -1,6 +1,6 @@
 {
   "name": "web-app-factory-workflow",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "language": "vi",
   "purpose": "Reusable A-to-Z web application development workflow based on the tournament management project",
   "entrypoints": [
@@ -36,7 +36,11 @@
     "templates/RELEASE_CHECKLIST.template.md",
     "templates/AI_TASK.template.md",
     "templates/ARCHITECTURE_DECISION.template.md",
-    "templates/ENVIRONMENT_MATRIX.template.md"
+    "templates/ENVIRONMENT_MATRIX.template.md",
+    "templates/FEATURE_IMPACT_REVIEW.template.md",
+    "templates/BUTTON_STATE_MATRIX.template.md",
+    "templates/SCREEN_STATE_MATRIX.template.md",
+    "templates/CROSS_PLATFORM_MATRIX.template.md"
   ],
   "standards": [
     "standards/README.md",
@@ -60,6 +64,7 @@
     "standards/PROBLEM_ORIENTED_TEST_MATRIX.md",
     "standards/PROBLEM_CATALOG_CHECKLIST.md",
     "standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md",
+    "standards/FEATURE_IMPACT_REVIEW_SPEC.md",
     "standards/THEME_I18N_GATES.md",
     "standards/VIETNAM_WEB_APP_COMPLIANCE_PROFILE.md",
     "standards/APPLE_IOS_APP_STORE_POLICY_PROFILE.md"

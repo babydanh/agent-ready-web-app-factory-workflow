@@ -42,9 +42,9 @@ Mỗi feature chỉ được ở một trạng thái chính. Khi bị lỗi, ghi
 
 **Thực hiện:** Đọc `knowledge/WEB_APP_PROBLEM_CATALOG.md` và `knowledge/DOMAIN_ADAPTATION_GUIDE.md`; chọn problem cards/profile, ghi failure hypotheses và đánh dấu card không áp dụng bằng `N/A + rationale`. Sau đó đọc `standards/PRODUCT_DISCOVERY_SPEC.md` và tạo `PRODUCT_DISCOVERY_BRIEF.template.md`. Ghi problem statement không gắn cứng vào solution, user segments/context, current journey, evidence, assumptions, alternatives, outcome/guardrail metrics và quyết định GO/GO_WITH_CONDITIONS/HOLD/STOP. Sau đó ghi tên sản phẩm, vai trò, use case, tính năng ưu tiên, dữ liệu chính, tích hợp, ràng buộc và tiêu chí hoàn thành. Tách rõ MVP, phase sau và out-of-scope. Viết các luồng chính, luồng lỗi và điều kiện bảo mật. Chọn compliance/risk profile từ `standards/AUDIT_COMPLIANCE_SPEC.md` và dùng `standards/COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` để kích hoạt đúng profile; nếu có Việt Nam hoặc iOS thì tạo scope record ngay từ intake. Nếu có typography/token/theme/light-dark/system hoặc locale/translation/RTL thì kích hoạt Theme/I18N profile và ghi supported modes/locales/direction ngay từ intake.
 
-**Đầu ra:** `PRD.md`, `acceptance-criteria.md`, danh sách persona, route map sơ bộ, permission matrix sơ bộ và compliance scope.
+**Đầu ra:** `PRD.md`, `acceptance-criteria.md`, danh sách persona, route map sơ bộ, permission matrix sơ bộ, compliance scope và quyết định triage/depth.
 
-**Gate:** Không có problem/user/outcome, problem cards/profile, tiêu chí chấp nhận, người dùng mục tiêu hoặc failure hypothesis quan trọng thì trạng thái là `BLOCKED`.
+**Gate:** Không có problem/user/outcome, problem cards/profile, tiêu chí chấp nhận, người dùng mục tiêu hoặc failure hypothesis quan trọng thì trạng thái là `BLOCKED`. Nếu feature có route, role, state, button, API/event, realtime, i18n hoặc cross-platform impact thì phải tạo Feature Impact Review và quyết định `GO`, `GO_WITH_CONDITIONS`, `HOLD` hoặc `STOP` trước implementation.
 
 ## Phase 1 — Recon codebase và kiến trúc
 
@@ -52,9 +52,9 @@ Mỗi feature chỉ được ở một trạng thái chính. Khi bị lỗi, ghi
 
 **Thực hiện:** Kiểm tra Git status và commit hiện tại; đọc README, current status, các `skills.md` liên quan, Graphify report và tài liệu domain. Đọc `standards/README.md`, `knowledge/WEB_APP_PROBLEM_CATALOG.md` và `knowledge/DOMAIN_ADAPTATION_GUIDE.md`; chọn problem cards/profile rồi tạo impact map chỉ rõ module backend, schema, endpoint, route, component, store, socket event và test có thể bị ảnh hưởng. Load theo signal: commerce → `knowledge/COMMERCE_SYSTEMS_PLAYBOOK.md`; recommendation/search → `knowledge/RECOMMENDATION_SEARCH_RANKING_PLAYBOOK.md`; dashboard → `knowledge/DASHBOARD_ANALYTICS_PLAYBOOK.md`; race/side effect → `knowledge/TRANSACTION_CONCURRENCY_PLAYBOOK.md`; repo/CI → `knowledge/REPOSITORY_CI_PATTERNS_PLAYBOOK.md`; Việt Nam/iOS → compliance profile tương ứng; theme/token/dark mode → `standards/THEME_AND_DESIGN_TOKENS_SPEC.md`; locale/translation/RTL → `standards/I18N_L10N_SPEC.md`. Không đọc mù toàn bộ repository.
 
-**Đầu ra:** `feature-impact-map.md`, architecture map, C4 impact view, Architecture Review/ADR draft, standards profile và danh sách file mục tiêu.
+**Đầu ra:** `feature-impact-map.md`, Feature Impact Review, surface/role/state/button inventory, architecture map, C4 impact view, Architecture Review/ADR draft, standards profile và danh sách file mục tiêu.
 
-**Gate:** Agent phải giải thích được feature đi qua những lớp nào, source of truth nào áp dụng và nêu được ít nhất các rủi ro tương tác. Thay đổi boundary, dependency, runtime, data flow hoặc quality attribute phải qua `standards/ARCHITECTURE_GOVERNANCE_SPEC.md`; thiếu rationale hoặc rollback là `NEEDS_REVIEW`.
+**Gate:** Agent phải giải thích được feature đi qua những lớp nào, source of truth nào áp dụng và nêu được ít nhất các rủi ro tương tác. FIR phải liệt kê route/screen, role/permission, state transition, button behavior, negative cases, Web/App parity và evidence owner. Thay đổi boundary, dependency, runtime, data flow hoặc quality attribute phải qua `standards/ARCHITECTURE_GOVERNANCE_SPEC.md`; thiếu rationale hoặc rollback là `NEEDS_REVIEW`.
 
 ## Phase 2 — Domain, database và API design
 
@@ -105,19 +105,20 @@ Mỗi feature lặp lại chu trình. Khi change có profile domain, phải đ�
 Mỗi feature lặp lại chu trình:
 
 ```text
-Spec → Impact Map → Data/DB → API/Event → UI/Design QA → Backend → Frontend
+Spec → Feature Impact Review → Impact Map → Data/DB → API/Event → UI/Design QA → Backend → Frontend
 → Edge Cases → Contract/Unit/E2E/A11y/Security/AI Eval Tests → SRE Observability/Runbook → Audit Evidence → Convergence Review → Docs
 ```
 
 Với đồ án quản lý giải đấu, thứ tự phụ thuộc khuyến nghị là: foundation; auth/users; categories/venues; tournaments/registration; stages/brackets; matches; live score; rankings/ELO; payments; communities/social; organizer/admin; polish/release. Nếu feature dùng AI, phải thêm task contract, eval dataset/graders, budget, tool policy và offline regression theo `standards/AI_EVALUATION_AND_COST_SPEC.md`. Commerce/payment/recommendation personalization mặc định là `HighRisk`; chỉ dùng tier thấp hơn khi có `profile-risk-waiver.md` với owner, compensating control và expiry. Scope Việt Nam dùng `LEGAL_REVIEW_REQUIRED` khi câu hỏi pháp lý chưa được qualified reviewer quyết định; iOS policy còn cần platform review và không có guarantee approval.
 
-**Gate:** Feature không được hoàn thành nếu thiếu loading, empty, error, permission, accessibility, SRE failure behavior và rollback behavior phù hợp. AI feature còn phải có deterministic/state/safety/cost checks. Nếu thêm field/status/endpoint mà chưa cập nhật source of truth, agent phải `BLOCKED` hoặc `NEEDS_CLARIFICATION`.
+**Gate:** Feature không được hoàn thành nếu thiếu loading, empty, error, permission, accessibility, SRE failure behavior và rollback behavior phù hợp. Button/state/platform impact phải khớp FIR; phát sinh surface, action, field, status, endpoint hoặc event mới phải cập nhật FIR trước khi tiếp tục. AI feature còn phải có deterministic/state/safety/cost checks. Nếu thêm field/status/endpoint mà chưa cập nhật source of truth, agent phải `BLOCKED` hoặc `NEEDS_CLARIFICATION`.
 
 ## Phase 6 — Frontend implementation
 
 Dùng Next.js App Router và TypeScript strict. Server Component là mặc định; chỉ dùng `'use client'` khi cần hook, event hoặc browser API. Dùng TailwindCSS, UI primitives chung, semantic design tokens, mobile-first và không hardcode style rải rác. Component chỉ render; logic API/state phức tạp nằm trong `features/*/api`, `features/*/hooks` hoặc store.
 
-Áp dụng `standards/UI_UX_DESIGN_SYSTEM_SPEC.md` và `standards/DESIGN_QA_SPEC.md`: map stable error code/status sang screen state; kiểm tra keyboard, focus, contrast, reduced motion, responsive, long text, offline và visual regression. Với Theme profile, dùng semantic/component tokens và kiểm tra light/dark/system, no-flash/hydration, forced colors và theme persistence. Với I18N profile, dùng message key, locale formatter, fallback, plural/select, text expansion, `lang`/`dir`, bidi và logical CSS. Axios instance phải xử lý access token, refresh token và 401 retry. Form dùng React Hook Form + Zod, trim input và map lỗi backend. Socket phải có auth handshake, room/event contract, reconnect behavior và cleanup listener.
+Áp dụng `standards/UI_UX_DESIGN_SYSTEM_SPEC.md`, `standards/DESIGN_QA_SPEC.md` và các Button-State/Screen-State Matrix: map stable error code/status sang screen state; kiểm tra keyboard, focus, contrast, reduced motion, responsive, long text, offline, duplicate click và visual regression.
+Với Theme profile, dùng semantic/component tokens và kiểm tra light/dark/system, no-flash/hydration, forced colors và theme persistence. Với I18N profile, dùng message key, locale formatter, fallback, plural/select, text expansion, `lang`/`dir`, bidi và logical CSS. Axios instance phải xử lý access token, refresh token và 401 retry. Form dùng React Hook Form + Zod, trim input và map lỗi backend. Socket phải có auth handshake, room/event contract, reconnect behavior và cleanup listener.
 
 ## Security gate xuyên suốt
 

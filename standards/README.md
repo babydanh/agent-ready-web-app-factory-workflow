@@ -9,6 +9,7 @@ Trước khi chọn solution, hãy đọc `../knowledge/WEB_APP_PROBLEM_CATALOG.
 | Thứ tự | Tài liệu | Khi nào dùng |
 |---:|---|---|
 | 1 | `PRODUCT_DISCOVERY_SPEC.md` | Trước khi cam kết build feature hoặc thay đổi user journey |
+| 1a | `FEATURE_IMPACT_REVIEW_SPEC.md` | Ngay sau discovery; khi feature có route, role, state, button, API/event, realtime, i18n hoặc cross-platform impact |
 | 2 | `ARCHITECTURE_GOVERNANCE_SPEC.md` | Khi quyết định boundary, runtime, dependency, data flow hoặc quality attribute |
 | 3 | `CANONICAL_DATA_SPEC.md` | Trước khi tạo entity, DTO, database column hoặc frontend type |
 | 4 | `DATABASE_ARCHITECTURE_SPEC.md` | Khi thiết kế ERD, constraint, index, transaction, migration, backup hoặc retention |
@@ -35,6 +36,8 @@ Trước khi chọn solution, hãy đọc `../knowledge/WEB_APP_PROBLEM_CATALOG.
 Problem catalog + domain archetype/profile + failure hypotheses
     ↓
 Discovery evidence + problem/user/outcome contract
+    ↓
+Feature Impact Review + surface/role/state/button/platform decision
     ↓
 Architecture baseline + C4/ADR/quality attributes
     ↓
@@ -83,19 +86,20 @@ Không cho phép một layer tự phát minh lại tên field, status, error cod
 Problem cards/profile phải được chọn trước khi bắt đầu quick-start. Nếu card không áp dụng, ghi `N/A + rationale` trong Problem Map; không bỏ qua silent.
 
 1. Tạo Product Discovery Brief; ghi problem, user evidence, assumptions, alternatives, outcome metrics và decision gate.
-2. Tạo Architecture Review/ADR; xác định C4 impact, quality attributes, boundaries, dependency và rollback.
-3. Tạo `DATA_ENTITY_SPEC`, `ENDPOINT_CONTRACT` và `SCREEN_SPEC` từ template; ghi owner, invariants, auth/ownership, state matrix và acceptance criteria.
-4. Review database boundary, normalization, constraints, index, transaction, migration và rollback trước khi code.
-5. Viết OpenAPI/JSON Schema, examples và error mapping; phân loại breaking/non-breaking và ghi consumer inventory.
-6. Map contract vào backend projection/DTO, frontend type, UI components, realtime/job payload và observability.
-7. Giao task cho agent bằng `AI_AGENT_TASK_STANDARD.template.md`; nêu allowed paths, source of truth, stop conditions và output schema.
-8. Nếu có AI, tạo eval task/dataset, grader, cost budget, tool policy và offline regression baseline.
-9. Chạy contract/schema tests, backend/frontend tests, E2E/a11y, security negative tests, concurrency/retry tests, AI eval và migration verification theo risk profile.
-10. Tạo service catalog/SLO/runbook cho release phù hợp; kiểm tra health/readiness, observability, rollback và post-release watch.
-11. Với commerce, payment, inventory, payout, entitlement, webhook hoặc retry, điền `COMMERCE_FLOW_SPEC.template.md` và `TRANSACTION_CONCURRENCY_TEST.template.md`; với recommendation/search điền `RECOMMENDATION_FEATURE_SPEC.template.md`; với dashboard/reporting điền `DASHBOARD_ANALYTICS_SPEC.template.md`.
-12. Nếu có typography/token/theme/light-dark/system/high-contrast, điền `THEME_CONFIG.template.json`; nếu có locale/translation/date-number-currency/timezone/RTL, điền `TRANSLATION_CATALOG.template.json`; với một trong hai profile, luôn điền `LOCALE_QA_MATRIX.template.md` và chạy `THEME_I18N_GATES.md`.
-13. Nếu scope có Việt Nam, điền `COMPLIANCE_SCOPE_RECORD.template.md` và ghi `LEGAL_REVIEW_REQUIRED` cho câu hỏi chưa được legal owner quyết định; nếu có iOS, điền `APPLE_IOS_RELEASE_REVIEW.template.md`.
-14. Chạy `COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` hoặc `THEME_I18N_GATES.md` tương ứng, điền `COMPLIANCE_TRACEABILITY.template.md`, `EXTENDED_GATES_CHECKLIST.md`, lưu evidence, review diff/secret/scope và chỉ release khi decision là `PASS` hoặc `PASS_WITH_CONDITIONS` có owner/expiry rõ ràng.
+2. Tạo Feature Impact Review; liệt kê route/screen/role, state transition, button-state, negative cases, Web/App parity, source of truth, owner và GO/HOLD/STOP decision.
+3. Tạo Architecture Review/ADR; xác định C4 impact, quality attributes, boundaries, dependency và rollback.
+4. Tạo `DATA_ENTITY_SPEC`, `ENDPOINT_CONTRACT` và `SCREEN_SPEC` từ template; ghi owner, invariants, auth/ownership, state matrix và acceptance criteria. Với Normal/HighRisk, hoàn thiện thêm `BUTTON_STATE_MATRIX`, `SCREEN_STATE_MATRIX` và `CROSS_PLATFORM_MATRIX`.
+5. Review database boundary, normalization, constraints, index, transaction, migration và rollback trước khi code.
+6. Viết OpenAPI/JSON Schema, examples và error mapping; phân loại breaking/non-breaking và ghi consumer inventory.
+7. Map contract vào backend projection/DTO, frontend type, UI components, realtime/job payload và observability.
+8. Giao task cho agent bằng `AI_AGENT_TASK_STANDARD.template.md`; nêu allowed paths, source of truth, stop conditions và output schema.
+9. Nếu có AI, tạo eval task/dataset, grader, cost budget, tool policy và offline regression baseline.
+10. Chạy contract/schema tests, backend/frontend tests, E2E/a11y, security negative tests, concurrency/retry tests, AI eval và migration verification theo risk profile.
+11. Tạo service catalog/SLO/runbook cho release phù hợp; kiểm tra health/readiness, observability, rollback và post-release watch.
+12. Với commerce, payment, inventory, payout, entitlement, webhook hoặc retry, điền `COMMERCE_FLOW_SPEC.template.md` và `TRANSACTION_CONCURRENCY_TEST.template.md`; với recommendation/search điền `RECOMMENDATION_FEATURE_SPEC.template.md`; với dashboard/reporting điền `DASHBOARD_ANALYTICS_SPEC.template.md`.
+13. Nếu có typography/token/theme/light-dark/system/high-contrast, điền `THEME_CONFIG.template.json`; nếu có locale/translation/date-number-currency/timezone/RTL, điền `TRANSLATION_CATALOG.template.json`; với một trong hai profile, luôn điền `LOCALE_QA_MATRIX.template.md` và chạy `THEME_I18N_GATES.md`.
+14. Nếu scope có Việt Nam, điền `COMPLIANCE_SCOPE_RECORD.template.md` và ghi `LEGAL_REVIEW_REQUIRED` cho câu hỏi chưa được legal owner quyết định; nếu có iOS, điền `APPLE_IOS_RELEASE_REVIEW.template.md`.
+15. Chạy `COMMERCE_RECOMMENDATION_DASHBOARD_GATES.md` hoặc `THEME_I18N_GATES.md` tương ứng, điền `COMPLIANCE_TRACEABILITY.template.md`, `EXTENDED_GATES_CHECKLIST.md`, lưu evidence, review diff/secret/scope và chỉ release khi decision là `PASS` hoặc `PASS_WITH_CONDITIONS` có owner/expiry rõ ràng.
 
 ## Điều bộ này không tuyên bố
 
