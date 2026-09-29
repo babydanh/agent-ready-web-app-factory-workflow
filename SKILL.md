@@ -98,7 +98,17 @@ Socket listener phải được cleanup. Các component lớn phải tách nhỏ
    - **Neutral Slate Palette**: Slate 900 (`#0F172A`) cho title/body text đậm; Slate 600 (`#475569`) cho subtitle/secondary text; Slate 400 (`#94A3B8`) cho muted/inactive icon; Slate 200 (`#E2E8F0`) cho border/divider lines; Slate 50 (`#F8FAFC`) cho background surfaces.
    - **Status Colors**: Success (`#16A34A`), Warning (`#D97706`), Danger/Live Pulse (`#DC2626`).
 
-2. **Chuẩn hóa Typography (Font Hierarchy & Weights)**:
+2. **Quy tắc Thiết kế Giao diện Tinh Tế & Chống Màu Đậm Nặng Mắt (Taste & Anti-Slop UI Standards)**:
+   - **Tuyệt đối không dùng màu đậm đặc (Solid Dark/Heavy Color) cho toàn bộ ô hover/active**:
+     - Cấm bọc cả khối bằng nền xanh đậm chói chang (`bg-blue-600` bọc cả ô to, menu flyout hoặc button thường).
+     - Trạng thái Hover / Active phải dùng tông **Light Tint hoặc Outline mềm mại**:
+       * Nền active/selected: dùng `bg-blue-50/70` hoặc `bg-slate-100/80` kết hợp chữ/icon `text-blue-600` và viền mảnh nhẹ (`ring-1 ring-blue-500/20` hoặc `border-blue-200/80`).
+       * Nền hover thông thường: dùng `hover:bg-slate-100/70` kết hợp chữ `text-slate-900`.
+   - **Giảm tải thị giác (Visual Weight Reduction)**:
+     - Giữ không gian thoáng, shadow nhẹ nhàng (`shadow-sm` hoặc `shadow-slate-900/5`), góc bo chuẩn mực (`rounded-xl` / `rounded-2xl`).
+     - Không lạm dụng badge đậm màu hoặc icon đảo màu âm bản (`brightness-0 invert`) khi không cần thiết; ưu tiên monochrome hoặc icon màu gốc tinh gọn.
+
+3. **Chuẩn hóa Typography (Font Hierarchy & Weights)**:
    - **Font Family**: Inter, SF Pro, Roboto, system-ui (Không dùng font lạ gây vỡ layout).
    - **Hệ thống cấp bậc chữ (Hierarchy)**:
      - `Heading 1 / Screen Title`: 20px - 24px, Bold (`FontWeight.w800` / `font-bold`), letter-spacing: `-0.02em`.
