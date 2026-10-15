@@ -2,8 +2,8 @@
   "workflow": "web-app-factory",
   "project": "quan-ly-giai-dau",
   "version": "1.0.0",
-  "status": "NEEDS_HUMAN_REVIEW",
-  "current_phase": "qa_security",
+  "status": "IN_PROGRESS",
+  "current_phase": "implementation",
   "completed": [
     "tournament-registration-mobile-division-20260925: compact Flutter team rows with inline selected content",
     "tournament-registration-mobile-division-20260925: doubles registration name entry removed; organizer pairing filter preserved",
@@ -19,7 +19,7 @@
     "lucide-sport-filter-icons-20260925: Lucide sport-filter icons passed mobile browser smoke, scoped TypeScript, and strict workflow validation",
     "doubles-approval-aware-pairing-20260925: Lite path and registration-mode lock revalidated; 27 focused backend tests, 10 browser E2E cases, backend build and strict workflow validation passed"
   ],
-  "updated_at": "2026-09-28T11:01:33+07:00",
+  "updated_at": "2026-10-03T14:35:50+07:00",
   "baseline": {
     "repository_root": "Project_QuanLyGiaiDau",
     "backend_path_actual": "HethongBackendApi_QuanlyGiaiDau",
@@ -75,6 +75,6 @@
     "changes/social-app-friday-rollback-20260928/09-test-plan.md",
     "changes/social-app-friday-rollback-20260928/10-implementation-log.md"
   ],
-  "next_action": "Review the Lucide sport-filter screenshot; for approval-gated pairing, obtain independent UX/accessibility, Commerce/Transaction and mobile-client review, plus isolated PostgreSQL backfill validation and a reviewed cutover plan. Keep release NOT_READY. For the Social rollback, review the recorded target test/source mismatch and analyzer info with the requester; keep stash cc9349e1c77dc06c115820fbd683c4f86b3bd59c until acceptance.",
+  "next_action": "tournament-manage-modal-navigation-20261003 is implemented and browser-verified: three horizontal operation tabs (registration, bracket, court schedule) above a compact left 'NỘI DUNG THI ĐẤU' selector and a right pane rendering only the selected division, with sponsor management inline in the page column. Remaining: refresh Graphify edges for the manage module and run a broader organizer E2E sweep. Release remains NOT_READY pending human review.",
   "notes": "Approval-gated doubles pairing was revalidated with synthetic data: 27 focused backend tests, 10 browser E2E cases, backend build and strict workflow validation passed. Lite remains on its existing flow; no production database, credentials, pairing mutation or migration was accessed. Release remains NEEDS_HUMAN_REVIEW pending independent approvals and isolated migration review. The separate Lucide sport-filter screenshot review remains open. A selective Flutter Social Sessions rollback to origin/main@e38758e is applied with the Home create CTA intentionally retained; strict workflow validation passed, but one target share-link test/source mismatch and one target analyzer info are recorded. Recovery stash cc9349e1c77dc06c115820fbd683c4f86b3bd59c remains retained pending requester acceptance."
 }
